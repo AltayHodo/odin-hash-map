@@ -3,6 +3,7 @@ import LinkedList from './linkedList.js';
 class HashMap {
   constructor() {
     this.buckets = new Array(16);
+    this.loadFactor = 0.75;
   }
 
   hash(key) {
@@ -40,6 +41,9 @@ class HashMap {
         key,
         value,
       });
+    }
+    if (this.isAtCapacity()) {
+      this.growSize();
     }
   }
 
@@ -158,6 +162,51 @@ class HashMap {
     });
     return array;
   }
+
+  isAtCapacity() {
+    let count = 0;
+    this.buckets.forEach((item) => {
+      if (item) {
+        count += 1;
+      }
+    });
+    return count / this.buckets.length > this.loadFactor;
+  }
+
+  growSize() {
+    const oldBuckets = this.buckets;
+    this.buckets = new Array(this.buckets.length * 2);
+    oldBuckets.forEach((item) => {
+      if (item) {
+        let node = item;
+        while (node) {
+          this.set(node.first.key, node.first.value);
+          node = node.rest;
+        }
+      }
+    });
+  }
 }
 
-
+let hashMap = new HashMap();
+hashMap.set('a', 1);
+hashMap.set('b', 1);
+hashMap.set('c', 1);
+hashMap.set('d', 1);
+hashMap.set('e', 1);
+hashMap.set('f', 1);
+hashMap.set('g', 1);
+hashMap.set('h', 1);
+hashMap.set('i', 1);
+hashMap.set('o', 1);
+hashMap.set('p', 1);
+hashMap.set('s', 1);
+hashMap.set('d', 1);
+hashMap.set('f', 1);
+hashMap.set('g', 1);
+hashMap.set('h', 1);
+hashMap.set('j', 1);
+hashMap.set('k', 1);
+hashMap.set('l', 1);
+console.log(hashMap.isAtCapacity());
+console.log(hashMap);
